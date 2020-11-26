@@ -1,0 +1,29 @@
+doctype
+html
+  head
+  body
+    script(src="assets/lib/json0/dev/require/json0.min.js")
+    script(src="assets/lib/json0/dev/json0.min.js")
+    //- standalone json0
+    script: :lsc
+      (->
+        a = {a: \hello, b: \world}
+        b = {a: \hell0, b: \wor1d}
+        ret = json0.diff(a,b)
+        console.log ret
+        json0.type.apply(a, ret)
+        console.log a
+      )!
+    //- json0 from require
+    script: :lsc
+      (->
+        json0 = require("json0")
+        a = {a: \hello, b: \world}
+        b = {a: \hell0, b: \wor1d}
+        ret = json0.diff(a,b)
+        console.log ret
+        json0.type.apply(a, ret)
+        console.log a
+      )!
+
+

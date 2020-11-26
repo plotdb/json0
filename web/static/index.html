@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head></head><body><script src="assets/lib/json0/dev/require/json0.min.js"></script><script src="assets/lib/json0/dev/json0.min.js"></script><script>(function(){
+  var a, b, ret;
+  a = {
+    a: 'hello',
+    b: 'world'
+  };
+  b = {
+    a: 'hell0',
+    b: 'wor1d'
+  };
+  ret = json0.diff(a, b);
+  console.log(ret);
+  json0.type.apply(a, ret);
+  return console.log(a);
+})();</script><script>(function(){
+  var json0, a, b, ret;
+  json0 = require("json0");
+  a = {
+    a: 'hello',
+    b: 'world'
+  };
+  b = {
+    a: 'hell0',
+    b: 'wor1d'
+  };
+  ret = json0.diff(a, b);
+  console.log(ret);
+  json0.type.apply(a, ret);
+  return console.log(a);
+})();</script></body></html>

@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+echo "prepare..."
+rm -rf dist
+rm -rf .built
+mkdir -p dist/require
+mkdir -p .built
+
+echo "prepare flags.js for replacing regexp.prototype.flags ..."
+npx lsc -cp src/flags.ls > .built/flags.js
+npx browserify -r .built/flags:regexp.prototype.flags | npx uglifyjs > ./.built/flags.r.min.js
+cat .built/flags.r.min.js > dist/require/json0-ot-diff.min.js
+cat .built/flags.r.min.js > dist/json0-ot-diff.min.js
+
+echo "bundling json0 related modules into dist ... "
+
+echo " - ot-json0 ... "
+# common-shakeify ( -p common-shakeify ) breaks this module, so remove it.
+npx browserify \
+  -g unassertify \
+  -g envify \
+  -g uglifyify \
+  -p browser-pack-flat/plugin \
+  -r ot-json0 | npx buble | npx uglifyjs > dist/require/ot-json0.min.js
+
+npx browserify -s otJson0 \
+  -g unassertify \
+  -g envify \
+  -g uglifyify \
+  -p browser-pack-flat/plugin \
+  -r ot-json0 | npx buble | npx uglifyjs > dist/ot-json0.min.js
+
+echo " - json0-ot-diff ... "
+npx browserify \
+  -u regexp.prototype.flags \
+  -p tinyify -r json0-ot-diff | npx buble | npx uglifyjs >> dist/require/json0-ot-diff.min.js
+npx browserify -s json0OtDiff \
+  -u regexp.prototype.flags \
+  -p tinyify -r json0-ot-diff | npx buble | npx uglifyjs >> dist/json0-ot-diff.min.js
+
+echo " - diff-match-patch ... "
+npx browserify \
+  -p tinyify -r diff-match-patch | npx buble | npx uglifyjs > dist/require/diff-match-patch.min.js
+npx browserify -s diffMatchPatch \
+  -p tinyify -r diff-match-patch | npx buble | npx uglifyjs > dist/diff-match-patch.min.js
+
+echo "json0 bundle ..."
+npx lsc -cbp src/json0.ls > .built/json0.js
+
+npx browserify \
+  -u ot-json0 -u json0-ot-diff -u diff-match-patch \
+  -r .built/json0.js:json0 | npx buble | npx uglifyjs > ./.built/json0.r.min.js
+
+npx browserify -s json0 \
+  -u ot-json0 -u json0-ot-diff -u diff-match-patch \
+  -r .built/json0.js | npx buble | npx uglifyjs > ./.built/json0.min.js
+
+cat .built/flags.r.min.js dist/require/ot-json0.min.js dist/require/json0-ot-diff.min.js dist/require/diff-match-patch.min.js .built/json0.r.min.js > dist/require/json0.min.js
+cat .built/flags.r.min.js dist/require/ot-json0.min.js dist/require/json0-ot-diff.min.js dist/require/diff-match-patch.min.js .built/json0.min.js > dist/json0.min.js
+
+echo "generate discify analysis of json0 modules ..."
+mkdir -p web/static/
+touch web/static/favicon.ico
+npx browserify --full-paths -s otJson0 -r ot-json0 | npx buble | npx uglifyjs | discify > web/static/ot-json0.html
+npx browserify --full-paths -s json0OtDiff -r json0-ot-diff | npx buble | npx uglifyjs | discify > web/static/json0-ot-diff.html
+npx browserify --full-paths -s diffMatchPatch -r diff-match-patch | npx buble | npx uglifyjs | discify > web/static/diff-match-patch.html
+npx browserify --full-paths -s json0 .built/json0.js | npx buble | npx uglifyjs | discify > web/static/json0.html
+
+echo "copy dist to web ..."
+rm -rf web/static/assets/lib/json0/dev/
+mkdir -p web/static/assets/lib/json0/dev/
+cp -R dist/* web/static/assets/lib/json0/dev/
+
+echo "clean up..."
+rm -rf .built
