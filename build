@@ -4,6 +4,7 @@ echo "prepare..."
 rm -rf dist
 rm -rf .built
 mkdir -p dist/require
+mkdir -p dist/node
 mkdir -p .built
 
 echo "prepare flags.js for replacing regexp.prototype.flags ..."
@@ -13,6 +14,9 @@ cat .built/flags.r.min.js > dist/require/json0-ot-diff.min.js
 cat .built/flags.r.min.js > dist/json0-ot-diff.min.js
 
 echo "bundling json0 related modules into dist ... "
+
+echo " - node/json0.js ... "
+npx lsc -cp src/json0.ls > dist/node/json0.js
 
 echo " - ot-json0 ... "
 # common-shakeify ( -p common-shakeify ) breaks this module, so remove it.

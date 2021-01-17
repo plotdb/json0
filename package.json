@@ -3,7 +3,8 @@
   "name": "@plotdb/json0",
   "license": "MIT",
   "description": "json0 ( ot + diff ) modules bundle ",
-  "version": "0.0.1",
+  "main": "dist/node/json0.js",
+  "version": "0.0.2",
   "files": [
     "dist/**/*"
   ],
