@@ -5,7 +5,7 @@
   "description": "json0 ( ot + diff ) modules bundle ",
   "browser": "dist/json0.min.js",
   "main": "dist/node/json0.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "files": [
     "dist/**/*"
   ],
@@ -19,7 +19,7 @@
     "npm": ">=6.4.1"
   },
   "scripts": {
-    "start": "npx server -r web"
+    "start": "npx server -r web -o true"
   },
   "devDependencies": {
     "browser-pack-flat": "^3.4.2",

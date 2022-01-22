@@ -1,5 +1,11 @@
 # Change Logs
 
+## v0.0.5
+
+ - release with compact directory structure
+ - open browser page by default when start server
+
+
 ## v0.0.4
 
  - use script directly instead of `npx` to speed up building
